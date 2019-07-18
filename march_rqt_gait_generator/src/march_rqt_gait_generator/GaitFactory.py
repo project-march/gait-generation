@@ -1,6 +1,5 @@
 import rospy
 
-
 from model.Gait import Gait
 from model.Joint import Joint
 from model.Limits import Limits
@@ -36,6 +35,95 @@ def empty_gait(robot, duration):
                       )
         joint_list.append(joint)
     return Gait(joint_list, duration)
+
+
+def from_matlab(robot, mat):
+    if robot is None:
+        rospy.logerr("Cannot create gait without a loaded robot.")
+        return None
+
+    duration = mat["stepTime"][0][0]
+
+    # Map M3 names to ours
+    expected_joints_map = {
+        "hip": "_hip_fe",
+        "knee": "_knee",
+        "ankle": "_ankle"
+    }
+
+    joints = []
+    for expected_joint in expected_joints_map:
+
+        # Create actual joint names
+        left_name = "left" + expected_joints_map[expected_joint]
+        right_name = "right" + expected_joints_map[expected_joint]
+
+        left_urdf_joint = get_joint_from_urdf(robot, left_name)
+        right_urdf_joint = get_joint_from_urdf(robot, right_name)
+
+        # Get limits from urdf
+        left_limits = Limits(left_urdf_joint.limit.lower, left_urdf_joint.limit.upper, left_urdf_joint.limit.velocity)
+        right_limits = Limits(right_urdf_joint.limit.lower, right_urdf_joint.limit.upper,
+                              right_urdf_joint.limit.velocity)
+
+        left_setpoints = []
+        right_setpoints = []
+
+        # Parse matlab file
+        relative_time = mat[expected_joint][0][0][0][0]
+        position = mat[expected_joint][0][0][1][0]
+        velocity = mat[expected_joint][0][0][2][0]
+
+        # Create setpoints
+        for i in range(0, len(relative_time)):
+            absolute_time = relative_time[i] / 100 * duration
+            left_setpoints.append(Setpoint(absolute_time, position[i], velocity[i]))
+            right_setpoints.append(Setpoint((absolute_time + duration / 2.0) % duration, position[i], velocity[i]))
+
+        right_setpoints.sort(key=get_time)
+
+        # Add a setpoint at the end to avoid interpolation issues
+        last_left_setpoint = left_setpoints[-1]
+        left_setpoints.append(Setpoint(duration, last_left_setpoint.position, last_left_setpoint.velocity))
+        last_right_setpoint = right_setpoints[-1]
+        right_setpoints.append(Setpoint(duration, last_right_setpoint.position, last_right_setpoint.velocity))
+
+        joints.append(Joint(left_name, left_limits, left_setpoints, duration))
+        joints.append(Joint(right_name, right_limits, right_setpoints, duration))
+
+        default_setpoints = [
+            Setpoint(0, 0, 0),
+            Setpoint(duration, 0, 0)
+        ]
+
+        # Add hip_aa joints if present in the urdf
+        left_hip_aa_urdf = get_joint_from_urdf(robot, "left_hip_aa")
+        if left_hip_aa_urdf is not None:
+            left_hip_aa = Joint("left_hip_aa",
+                                Limits(left_hip_aa_urdf.safety_controller.soft_lower_limit,
+                                       left_hip_aa_urdf.safety_controller.soft_upper_limit,
+                                       left_hip_aa_urdf.limit.velocity),
+                                default_setpoints,
+                                duration
+                                )
+            joints.append(left_hip_aa)
+
+        right_hip_aa_urdf = get_joint_from_urdf(robot, "right_hip_aa")
+        if right_hip_aa_urdf is not None:
+            right_hip_aa = Joint("right_hip_aa",
+                                 Limits(right_hip_aa_urdf.safety_controller.soft_lower_limit,
+                                        right_hip_aa_urdf.safety_controller.soft_upper_limit,
+                                        right_hip_aa_urdf.limit.velocity),
+                                 default_setpoints,
+                                 duration
+                                 )
+            joints.append(right_hip_aa)
+    return Gait(joints, duration, "Gait placeholder", "Subgait placeholder", "Version placeholder",
+                "Description placeholder")
+
+
+def get_time(setpoint):
+    return setpoint.time
 
 
 def from_msg(robot, march_gait, gait_name, subgait_name, version):

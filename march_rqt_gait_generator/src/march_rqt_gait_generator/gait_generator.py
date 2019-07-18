@@ -383,9 +383,9 @@ class GaitGeneratorPlugin(Plugin):
     def load_gait(self):
 
         file_name, f = QFileDialog.getOpenFileName(self._widget,
-                                                   "Open Image",
+                                                   "Open Subgait",
                                                    rospkg.RosPack().get_path('march_rqt_gait_generator'),
-                                                   "March Subgait (*.subgait)")
+                                                   "March Subgait (*.subgait), March Matlab (*.mat)")
 
         gait_directory = '/'.join(file_name.split('/')[:-3])
         if gait_directory != "":

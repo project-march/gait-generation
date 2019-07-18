@@ -2,6 +2,7 @@ import os
 import rospy
 
 import yaml
+import scipy.io
 
 from UserInterfaceController import notify
 import GaitFactory
@@ -50,9 +51,7 @@ def export_to_file(gait, gait_directory):
     output_file.close()
 
 
-def import_from_file_name(robot, file_name):
-    if file_name is None or file_name == "":
-        return None
+def import_from_subgait_file(robot, file_name):
     try:
         gait_name = file_name.split("/")[-3]
         subgait_name = file_name.split("/")[-2]
@@ -64,3 +63,18 @@ def import_from_file_name(robot, file_name):
         rospy.logerr(str(e))
         return None
     return GaitFactory.from_msg(robot, march_subgait, gait_name, subgait_name, version)
+
+
+def import_from_matlab_file(robot, file_name):
+    mat = scipy.io.loadmat(file_name)
+    return GaitFactory.from_matlab(robot, mat)
+
+
+def import_from_file_name(robot, file_name):
+    if file_name is None or file_name == "":
+        return None
+    name, extension = os.path.splitext(file_name)
+    if extension == ".subgait":
+        return import_from_file_name(robot, file_name)
+    if extension == ".mat":
+        return import_from_matlab_file(robot, file_name)
