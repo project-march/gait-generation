@@ -3,6 +3,7 @@ project(march_rqt_gait_generator)
 
 find_package(catkin REQUIRED COMPONENTS
     march_shared_resources
+    march_shared_classes
     roslint
 )
 

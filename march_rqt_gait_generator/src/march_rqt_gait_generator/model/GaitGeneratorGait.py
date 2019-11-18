@@ -1,28 +1,13 @@
 import rospy
+from march_shared_classes.gait.Gait import Gait
+from GaitGeneratorJoint import GaitGeneratorJoint
+
 from trajectory_msgs.msg import JointTrajectory
 from trajectory_msgs.msg import JointTrajectoryPoint
-
-from Joint import Joint
-
 from march_shared_resources.msg import Setpoint
 
 
-class Gait:
-    def __init__(self, joints, duration, gait_type="walk_like",
-                 name="Walk", subgait="right_open", version="First try", description="Just a simple gait"):
-        # Set gait_type to walk_like if an old file with no gait_type is opened
-        if gait_type == "":
-            gait_type = "walk_like"
-
-        self.joints = joints
-        self.gait_type = gait_type
-        self.name = name
-        self.subgait = subgait
-        self.version = version
-        self.description = str(description)
-        self.duration = duration
-        self.current_time = 0
-
+class GaitGeneratorGait(Gait):
     def to_joint_trajectory(self):
         joint_trajectory = JointTrajectory()
 
@@ -58,21 +43,6 @@ class Gait:
             user_defined_setpoints.append(user_defined_setpoint)
         return user_defined_setpoints
 
-    def get_unique_timestamps(self):
-        timestamps = []
-        for joint in self.joints:
-            for setpoint in joint.setpoints:
-                timestamps.append(setpoint.time)
-
-        return sorted(set(timestamps))
-
-    def get_joint(self, name):
-        for i in range(0, len(self.joints)):
-            if self.joints[i].name == name:
-                return self.joints[i]
-        rospy.logerr("Joint with name " + name + " does not exist in gait " + self.name + ".")
-        return None
-
     def has_multiple_setpoints_before_duration(self, duration):
         for joint in self.joints:
             count = 0
@@ -89,40 +59,6 @@ class Gait:
                 if setpoint.time > duration:
                     return True
         return False
-
-    # Setters to allow changing values in a callback
-    def set_gait_type(self, gait_type):
-        self.gait_type = str(gait_type)
-
-    def set_name(self, name):
-        self.name = name
-
-    def set_description(self, description):
-        self.description = str(description)
-
-    def set_version(self, version):
-        self.version = version
-
-    def set_subgait(self, subgait):
-        self.subgait = subgait
-
-    def set_duration(self, duration, rescale=False):
-        for joint in self.joints:
-            # Loop in reverse to avoid out of bounds errors while deleting.
-            for setpoint in reversed(joint.setpoints):
-                if rescale:
-                    setpoint.set_time(duration * setpoint.time / self.duration)
-                else:
-                    if setpoint.time > duration:
-                        joint.setpoints.remove(setpoint)
-            joint.interpolated_setpoints = joint.interpolate_setpoints()
-
-            joint.duration = duration
-
-        self.duration = duration
-
-    def set_current_time(self, current_time):
-        self.current_time = current_time
 
     def can_mirror(self, key_1, key_2):
         if not key_1 or not key_2:
@@ -185,7 +121,7 @@ class Gait:
             else:
                 continue
 
-            mirrored_joint = Joint(mirrored_name, joint.limits, joint.setpoints, joint.duration)
+            mirrored_joint = GaitGeneratorJoint(mirrored_name, joint.limits, joint.setpoints, joint.duration)
             mirrored_joints.append(mirrored_joint)
 
         return Gait(mirrored_joints, self.duration, self.name, mirrored_subgait_name, self.version, self.description)
