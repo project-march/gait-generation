@@ -4,7 +4,7 @@ import math
 from JointSettingSpinBoxDelegate import JointSettingSpinBoxDelegate
 from python_qt_binding.QtWidgets import QTableWidgetItem
 
-from model.GaitGeneratorSetpoint import GaitGeneratorSetpoint
+from model.ModifiableSetpoint import GaitGeneratorSetpoint
 import subprocess
 
 TABLE_DIGITS = 4

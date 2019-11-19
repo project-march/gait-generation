@@ -1,9 +1,9 @@
 import rospy
 
-from model.GaitGeneratorGait import GaitGeneratorGait
-from model.GaitGeneratorJoint import GaitGeneratorJoint
+from model.ModifiableGait import GaitGeneratorGait
+from model.ModifiableJoint import GaitGeneratorJoint
 from march_shared_classes.gait.Limits import Limits
-from model.GaitGeneratorSetpoint import GaitGeneratorSetpoint
+from model.ModifiableSetpoint import GaitGeneratorSetpoint
 
 
 def empty_gait(gait_generator, robot, duration):

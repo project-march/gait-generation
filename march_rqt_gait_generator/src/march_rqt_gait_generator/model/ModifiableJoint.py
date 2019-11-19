@@ -5,7 +5,7 @@ from scipy.interpolate import BPoly
 from numpy_ringbuffer import RingBuffer
 
 from march_shared_classes.gait.Joint import Joint
-from GaitGeneratorSetpoint import GaitGeneratorSetpoint
+from ModifiableSetpoint import GaitGeneratorSetpoint
 
 
 class GaitGeneratorJoint(Joint):

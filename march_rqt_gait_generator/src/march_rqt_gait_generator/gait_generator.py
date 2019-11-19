@@ -26,7 +26,7 @@ from sensor_msgs.msg import JointState
 import GaitFactory
 import UserInterfaceController
 
-from model.GaitGeneratorSetpoint import GaitGeneratorSetpoint
+from model.ModifiableSetpoint import GaitGeneratorSetpoint
 
 from import_export import export_to_file, import_from_file_name
 

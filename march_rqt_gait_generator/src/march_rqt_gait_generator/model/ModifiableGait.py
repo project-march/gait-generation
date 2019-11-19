@@ -1,6 +1,6 @@
 import rospy
 from march_shared_classes.gait.Gait import Gait
-from GaitGeneratorJoint import GaitGeneratorJoint
+from ModifiableJoint import GaitGeneratorJoint
 
 from trajectory_msgs.msg import JointTrajectory
 from trajectory_msgs.msg import JointTrajectoryPoint
