@@ -5,10 +5,10 @@ from scipy.interpolate import BPoly
 from numpy_ringbuffer import RingBuffer
 
 from march_shared_classes.gait.joint import Joint
-from ModifiableSetpoint import GaitGeneratorSetpoint
+from modifiable_setpoint import ModifiableSetpoint
 
 
-class GaitGeneratorJoint(Joint):
+class ModifiableJoint(Joint):
 
     def __init__(self, name, limits, setpoints, duration, gait_generator):
         self.name = name
@@ -42,9 +42,9 @@ class GaitGeneratorJoint(Joint):
                 position = interpolated_setpoints[1][i - 1]
                 velocity = (interpolated_setpoints[1][i - 1] - interpolated_setpoints[1][i - 2]) \
                     / (interpolated_setpoints[0][i - 1] - interpolated_setpoints[0][i - 2])
-                return GaitGeneratorSetpoint(time, position, velocity)
+                return ModifiableSetpoint(time, position, velocity)
         rospy.logerr("Could not interpolate setpoint at time " + str(time))
-        return GaitGeneratorSetpoint(0, 0, 0)
+        return ModifiableSetpoint(0, 0, 0)
 
     def interpolate_setpoints(self):
         time, position, velocity = self.get_setpoints_unzipped()

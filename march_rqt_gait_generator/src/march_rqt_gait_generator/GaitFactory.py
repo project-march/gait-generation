@@ -1,9 +1,9 @@
 import rospy
 
-from model.ModifiableGait import GaitGeneratorGait
-from model.ModifiableJoint import GaitGeneratorJoint
+from model.modifiable_gait import ModifiableGait
+from model.modifiable_joint import ModifiableJoint
 from march_shared_classes.gait.limits import Limits
-from model.ModifiableSetpoint import GaitGeneratorSetpoint
+from model.modifiable_setpoint import ModifiableSetpoint
 
 
 def empty_gait(gait_generator, robot, duration):
@@ -21,21 +21,21 @@ def empty_gait(gait_generator, robot, duration):
             continue
 
         default_setpoints = [
-            GaitGeneratorSetpoint(0.2, 0, 0),
-            GaitGeneratorSetpoint(3, 1.3, 0),
-            GaitGeneratorSetpoint(4, 1.3, 0),
-            GaitGeneratorSetpoint(duration, 0, 0)
+            ModifiableSetpoint(0.2, 0, 0),
+            ModifiableSetpoint(3, 1.3, 0),
+            ModifiableSetpoint(4, 1.3, 0),
+            ModifiableSetpoint(duration, 0, 0)
         ]
-        joint = GaitGeneratorJoint(urdf_joint.name,
-                                   Limits(urdf_joint.safety_controller.soft_lower_limit,
+        joint = ModifiableJoint(urdf_joint.name,
+                                Limits(urdf_joint.safety_controller.soft_lower_limit,
                                           urdf_joint.safety_controller.soft_upper_limit,
                                           urdf_joint.limit.velocity),
-                                   default_setpoints,
-                                   duration,
-                                   gait_generator
-                                   )
+                                default_setpoints,
+                                duration,
+                                gait_generator
+                                )
         joint_list.append(joint)
-    return GaitGeneratorGait(joint_list, duration)
+    return ModifiableGait(joint_list, duration)
 
 
 def from_msg(gait_generator, robot, march_gait, gait_name, subgait_name, version):
@@ -73,8 +73,8 @@ def from_msg(gait_generator, robot, march_gait, gait_name, subgait_name, version
 
             for point in joint_trajectory.points:
                 time = rospy.Duration(point.time_from_start.secs, point.time_from_start.nsecs).to_sec()
-                setpoints.append(GaitGeneratorSetpoint(time, point.positions[joint_index],
-                                                       point.velocities[joint_index]))
+                setpoints.append(ModifiableSetpoint(time, point.positions[joint_index],
+                                                    point.velocities[joint_index]))
 
         rospy.loginfo("Joint " + joint_name + " has setpoints " + str(setpoints))
         urdf_joint = get_joint_from_urdf(robot, joint_name)
@@ -82,16 +82,16 @@ def from_msg(gait_generator, robot, march_gait, gait_name, subgait_name, version
         limits = Limits(urdf_joint.safety_controller.soft_lower_limit,
                         urdf_joint.safety_controller.soft_upper_limit,
                         urdf_joint.limit.velocity)
-        joint = GaitGeneratorJoint(joint_name,
-                                   limits,
-                                   setpoints,
-                                   duration,
-                                   gait_generator
-                                   )
+        joint = ModifiableJoint(joint_name,
+                                limits,
+                                setpoints,
+                                duration,
+                                gait_generator
+                                )
         joint_list.append(joint)
 
-    return GaitGeneratorGait(joint_list, duration, march_gait.gait_type, gait_name, subgait_name,
-                             version, march_gait.description)
+    return ModifiableGait(joint_list, duration, march_gait.gait_type, gait_name, subgait_name,
+                          version, march_gait.description)
 
 
 def get_setpoint_at_duration(joint_trajectory, joint_name, duration):
@@ -100,7 +100,7 @@ def get_setpoint_at_duration(joint_trajectory, joint_name, duration):
             index = joint_trajectory.joint_names.index(joint_name)
             time = rospy.Duration(point.time_from_start.secs, point.time_from_start.nsecs).to_sec()
 
-            return GaitGeneratorSetpoint(time, point.positions[index], point.velocities[index])
+            return ModifiableSetpoint(time, point.positions[index], point.velocities[index])
     return None
 
 

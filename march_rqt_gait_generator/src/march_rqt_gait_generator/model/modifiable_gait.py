@@ -1,13 +1,13 @@
 import rospy
 from march_shared_classes.gait.gait import Gait
-from ModifiableJoint import GaitGeneratorJoint
+from modifiable_joint import ModifiableJoint
 
 from trajectory_msgs.msg import JointTrajectory
 from trajectory_msgs.msg import JointTrajectoryPoint
 from march_shared_resources.msg import Setpoint
 
 
-class GaitGeneratorGait(Gait):
+class ModifiableGait(Gait):
     def to_joint_trajectory(self):
         joint_trajectory = JointTrajectory()
 
@@ -121,7 +121,7 @@ class GaitGeneratorGait(Gait):
             else:
                 continue
 
-            mirrored_joint = GaitGeneratorJoint(mirrored_name, joint.limits, joint.setpoints, joint.duration)
+            mirrored_joint = ModifiableJoint(mirrored_name, joint.limits, joint.setpoints, joint.duration)
             mirrored_joints.append(mirrored_joint)
 
         return Gait(mirrored_joints, self.duration, self.name, mirrored_subgait_name, self.version, self.description)

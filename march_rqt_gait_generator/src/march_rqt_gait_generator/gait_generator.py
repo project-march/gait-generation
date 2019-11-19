@@ -26,7 +26,7 @@ from sensor_msgs.msg import JointState
 import GaitFactory
 import UserInterfaceController
 
-from model.ModifiableSetpoint import GaitGeneratorSetpoint
+from model.modifiable_setpoint import ModifiableSetpoint
 
 from import_export import export_to_file, import_from_file_name
 
@@ -244,7 +244,7 @@ class GaitGeneratorPlugin(Plugin):
             if button == QtCore.Qt.ControlModifier:
                 joint.add_interpolated_setpoint(time)
             else:
-                joint.add_setpoint(GaitGeneratorSetpoint(time, position, 0))
+                joint.add_setpoint(ModifiableSetpoint(time, position, 0))
 
         self.undo_button.clicked.connect(update_joint_ui)
         self.redo_button.clicked.connect(update_joint_ui)
