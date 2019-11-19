@@ -2,7 +2,7 @@ import rospy
 
 from model.ModifiableGait import GaitGeneratorGait
 from model.ModifiableJoint import GaitGeneratorJoint
-from march_shared_classes.gait.Limits import Limits
+from march_shared_classes.gait.limits import Limits
 from model.ModifiableSetpoint import GaitGeneratorSetpoint
 
 

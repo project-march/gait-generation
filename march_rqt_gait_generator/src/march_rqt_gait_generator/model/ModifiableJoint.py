@@ -4,7 +4,7 @@ import rospy
 from scipy.interpolate import BPoly
 from numpy_ringbuffer import RingBuffer
 
-from march_shared_classes.gait.Joint import Joint
+from march_shared_classes.gait.joint import Joint
 from ModifiableSetpoint import GaitGeneratorSetpoint
 
 

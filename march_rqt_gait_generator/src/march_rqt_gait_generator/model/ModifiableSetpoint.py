@@ -1,4 +1,4 @@
-from march_shared_classes.gait.Setpoint import Setpoint
+from march_shared_classes.gait.setpoint import Setpoint
 
 
 class GaitGeneratorSetpoint(Setpoint):
