@@ -1,6 +1,6 @@
 import rospy
 
-from model.modifiable_gait import ModifiableGait
+from model.modifiable_subgait import ModifiableSubgait
 from model.modifiable_joint import ModifiableJoint
 from march_shared_classes.gait.limits import Limits
 from model.modifiable_setpoint import ModifiableSetpoint
@@ -35,7 +35,7 @@ def empty_gait(gait_generator, robot, duration):
                                 gait_generator
                                 )
         joint_list.append(joint)
-    return ModifiableGait(joint_list, duration)
+    return ModifiableSubgait(joint_list, duration)
 
 
 def from_msg(gait_generator, robot, march_gait, gait_name, subgait_name, version):
@@ -90,8 +90,8 @@ def from_msg(gait_generator, robot, march_gait, gait_name, subgait_name, version
                                 )
         joint_list.append(joint)
 
-    return ModifiableGait(joint_list, duration, march_gait.gait_type, gait_name, subgait_name,
-                          version, march_gait.description)
+    return ModifiableSubgait(joint_list, duration, march_gait.gait_type, gait_name, subgait_name,
+                             version, march_gait.description)
 
 
 def get_setpoint_at_duration(joint_trajectory, joint_name, duration):

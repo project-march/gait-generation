@@ -1,5 +1,5 @@
 import rospy
-from march_shared_classes.gait.gait import Gait
+from march_shared_classes.gait.subgait import Subgait
 from modifiable_joint import ModifiableJoint
 
 from trajectory_msgs.msg import JointTrajectory
@@ -7,7 +7,7 @@ from trajectory_msgs.msg import JointTrajectoryPoint
 from march_shared_resources.msg import Setpoint
 
 
-class ModifiableGait(Gait):
+class ModifiableSubgait(Subgait):
     def to_joint_trajectory(self):
         joint_trajectory = JointTrajectory()
 
