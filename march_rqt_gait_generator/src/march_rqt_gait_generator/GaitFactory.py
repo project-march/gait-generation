@@ -73,7 +73,8 @@ def from_msg(gait_generator, robot, march_gait, gait_name, subgait_name, version
 
             for point in joint_trajectory.points:
                 time = rospy.Duration(point.time_from_start.secs, point.time_from_start.nsecs).to_sec()
-                setpoints.append(GaitGeneratorSetpoint(time, point.positions[joint_index], point.velocities[joint_index]))
+                setpoints.append(GaitGeneratorSetpoint(time, point.positions[joint_index],
+                                                       point.velocities[joint_index]))
 
         rospy.loginfo("Joint " + joint_name + " has setpoints " + str(setpoints))
         urdf_joint = get_joint_from_urdf(robot, joint_name)
