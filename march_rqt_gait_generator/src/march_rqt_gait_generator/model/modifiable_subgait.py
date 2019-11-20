@@ -66,8 +66,8 @@ class ModifiableSubgait(Subgait):
             return False
 
         # XNOR, only one key can and must exist in the subgait name
-        if (key_1 in self.subgait) == (key_2 in self.subgait):
-            rospy.loginfo("Multiple or no keys exist in subgait %s", self.subgait)
+        if (key_1 in self.subgait_name) == (key_2 in self.subgait_name):
+            rospy.loginfo("Multiple or no keys exist in subgait %s", self.subgait_name)
             return False
 
         # If a joint name has both keys, we wouldn't know how to replace them.
@@ -101,13 +101,13 @@ class ModifiableSubgait(Subgait):
 
     def get_mirror(self, key_1, key_2):
         if not self.can_mirror(key_1, key_2):
-            rospy.logwarn("Cannot mirror gait %s", self.name)
+            rospy.logwarn("Cannot mirror gait %s", self.gait_name)
             return False
 
-        if key_1 in self.subgait:
-            mirrored_subgait_name = self.subgait.replace(key_1, key_2)
-        elif key_2 in self.subgait:
-            mirrored_subgait_name = self.subgait.replace(key_2, key_1)
+        if key_1 in self.subgait_name:
+            mirrored_subgait_name = self.subgait_name.replace(key_1, key_2)
+        elif key_2 in self.subgait_name:
+            mirrored_subgait_name = self.subgait_name.replace(key_2, key_1)
         else:
             rospy.logerr("This case should have been caught by can_mirror()")
             return False
@@ -124,4 +124,5 @@ class ModifiableSubgait(Subgait):
             mirrored_joint = ModifiableJointTrajectory(mirrored_name, joint.limits, joint.setpoints, joint.duration)
             mirrored_joints.append(mirrored_joint)
 
-        return Gait(mirrored_joints, self.duration, self.name, mirrored_subgait_name, self.version, self.description)
+        return ModifiableSubgait(mirrored_joints, self.duration, self.gait_type, self.gait_name, mirrored_subgait_name,
+                                 self.version, self.description)

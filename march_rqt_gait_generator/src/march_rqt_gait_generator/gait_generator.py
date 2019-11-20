@@ -138,13 +138,13 @@ class GaitGeneratorPlugin(Plugin):
             lambda text: self.gait.set_gait_type(text)
         )
         self.gait_name_line_edit.textChanged.connect(
-            lambda text: self.gait.set_name(text)
+            lambda text: self.gait.set_gait_name(text)
         )
         self.version_name_line_edit.textChanged.connect(
             lambda text: self.gait.set_version(text)
         )
         self.subgait_name_line_edit.textChanged.connect(
-            lambda text: self.gait.set_subgait(text)
+            lambda text: self.gait.set_subgait_name(text)
         )
         self.description_line_edit.textChanged.connect(
             lambda text: self.gait.set_description(text)
