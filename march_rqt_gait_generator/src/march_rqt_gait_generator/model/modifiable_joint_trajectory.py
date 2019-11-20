@@ -4,11 +4,11 @@ import rospy
 from scipy.interpolate import BPoly
 from numpy_ringbuffer import RingBuffer
 
-from march_shared_classes.gait.joint import Joint
+from march_shared_classes.gait.joint_trajectory import JointTrajectory
 from modifiable_setpoint import ModifiableSetpoint
 
 
-class ModifiableJoint(Joint):
+class ModifiableJointTrajectory(JointTrajectory):
 
     def __init__(self, name, limits, setpoints, duration, gait_generator):
         self.name = name

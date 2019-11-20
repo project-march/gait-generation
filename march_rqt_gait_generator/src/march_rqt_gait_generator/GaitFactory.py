@@ -1,7 +1,7 @@
 import rospy
 
 from model.modifiable_subgait import ModifiableSubgait
-from model.modifiable_joint import ModifiableJoint
+from model.modifiable_joint_trajectory import ModifiableJointTrajectory
 from march_shared_classes.gait.limits import Limits
 from model.modifiable_setpoint import ModifiableSetpoint
 
@@ -26,14 +26,14 @@ def empty_gait(gait_generator, robot, duration):
             ModifiableSetpoint(4, 1.3, 0),
             ModifiableSetpoint(duration, 0, 0)
         ]
-        joint = ModifiableJoint(urdf_joint.name,
-                                Limits(urdf_joint.safety_controller.soft_lower_limit,
+        joint = ModifiableJointTrajectory(urdf_joint.name,
+                                          Limits(urdf_joint.safety_controller.soft_lower_limit,
                                           urdf_joint.safety_controller.soft_upper_limit,
                                           urdf_joint.limit.velocity),
-                                default_setpoints,
-                                duration,
-                                gait_generator
-                                )
+                                          default_setpoints,
+                                          duration,
+                                          gait_generator
+                                          )
         joint_list.append(joint)
     return ModifiableSubgait(joint_list, duration)
 
@@ -82,12 +82,12 @@ def from_msg(gait_generator, robot, march_gait, gait_name, subgait_name, version
         limits = Limits(urdf_joint.safety_controller.soft_lower_limit,
                         urdf_joint.safety_controller.soft_upper_limit,
                         urdf_joint.limit.velocity)
-        joint = ModifiableJoint(joint_name,
-                                limits,
-                                setpoints,
-                                duration,
-                                gait_generator
-                                )
+        joint = ModifiableJointTrajectory(joint_name,
+                                          limits,
+                                          setpoints,
+                                          duration,
+                                          gait_generator
+                                          )
         joint_list.append(joint)
 
     return ModifiableSubgait(joint_list, duration, march_gait.gait_type, gait_name, subgait_name,

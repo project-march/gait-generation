@@ -1,6 +1,6 @@
 import rospy
 from march_shared_classes.gait.subgait import Subgait
-from modifiable_joint import ModifiableJoint
+from modifiable_joint_trajectory import ModifiableJointTrajectory
 
 from trajectory_msgs.msg import JointTrajectory
 from trajectory_msgs.msg import JointTrajectoryPoint
@@ -121,7 +121,7 @@ class ModifiableSubgait(Subgait):
             else:
                 continue
 
-            mirrored_joint = ModifiableJoint(mirrored_name, joint.limits, joint.setpoints, joint.duration)
+            mirrored_joint = ModifiableJointTrajectory(mirrored_name, joint.limits, joint.setpoints, joint.duration)
             mirrored_joints.append(mirrored_joint)
 
         return Gait(mirrored_joints, self.duration, self.name, mirrored_subgait_name, self.version, self.description)
