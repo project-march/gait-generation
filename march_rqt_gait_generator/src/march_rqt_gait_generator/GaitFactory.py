@@ -28,8 +28,8 @@ def empty_gait(gait_generator, robot, duration):
         ]
         joint = ModifiableJointTrajectory(urdf_joint.name,
                                           Limits(urdf_joint.safety_controller.soft_lower_limit,
-                                          urdf_joint.safety_controller.soft_upper_limit,
-                                          urdf_joint.limit.velocity),
+                                                 urdf_joint.safety_controller.soft_upper_limit,
+                                                 urdf_joint.limit.velocity),
                                           default_setpoints,
                                           duration,
                                           gait_generator
