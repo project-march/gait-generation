@@ -138,13 +138,13 @@ class GaitGeneratorPlugin(Plugin):
             lambda text: self.gait.set_gait_type(text)
         )
         self.gait_name_line_edit.textChanged.connect(
-            lambda text: self.gait.set_name(text)
+            lambda text: self.gait.set_gait_name(text)
         )
         self.version_name_line_edit.textChanged.connect(
             lambda text: self.gait.set_version(text)
         )
         self.subgait_name_line_edit.textChanged.connect(
-            lambda text: self.gait.set_subgait(text)
+            lambda text: self.gait.set_subgait_name(text)
         )
         self.description_line_edit.textChanged.connect(
             lambda text: self.gait.set_description(text)
@@ -174,8 +174,8 @@ class GaitGeneratorPlugin(Plugin):
         ])
 
         self.gait_type_combo_box.setCurrentText(self.gait.gait_type)
-        self.gait_name_line_edit.setText(self.gait.name)
-        self.subgait_name_line_edit.setText(self.gait.subgait)
+        self.gait_name_line_edit.setText(self.gait.gait_name)
+        self.subgait_name_line_edit.setText(self.gait.subgait_name)
         self.version_name_line_edit.setText(self.gait.version)
         self.description_line_edit.setText(self.gait.description)
 
