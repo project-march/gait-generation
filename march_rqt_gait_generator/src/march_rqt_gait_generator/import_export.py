@@ -24,7 +24,7 @@ def export_to_file(gait, gait_directory):
 
     subgait.duration = rospy.Duration.from_sec(gait.duration)
 
-    output_file_directory = os.path.join(gait_directory, gait.name.replace(" ", "_"), gait.subgait.replace(" ", "_"))
+    output_file_directory = os.path.join(gait_directory, gait.gait_name.replace(" ", "_"), gait.subgait_name.replace(" ", "_"))
     output_file_path = os.path.join(output_file_directory, gait.version.replace(" ", "_") + ".subgait")
 
     file_exists = os.path.isfile(output_file_path)
