@@ -174,8 +174,8 @@ class GaitGeneratorPlugin(Plugin):
         ])
 
         self.gait_type_combo_box.setCurrentText(self.gait.gait_type)
-        self.gait_name_line_edit.setText(self.gait.name)
-        self.subgait_name_line_edit.setText(self.gait.subgait)
+        self.gait_name_line_edit.setText(self.gait.gait_name)
+        self.subgait_name_line_edit.setText(self.gait.subgait_name)
         self.version_name_line_edit.setText(self.gait.version)
         self.description_line_edit.setText(self.gait.description)
 
