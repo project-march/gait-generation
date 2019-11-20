@@ -23,7 +23,6 @@ from tf import TransformListener, LookupException, ConnectivityException, Extrap
 from trajectory_msgs.msg import JointTrajectory
 from sensor_msgs.msg import JointState
 
-import GaitFactory
 import UserInterfaceController
 
 from model.modifiable_subgait import ModifiableSubgait
