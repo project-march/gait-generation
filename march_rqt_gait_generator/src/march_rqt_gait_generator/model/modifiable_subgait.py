@@ -1,6 +1,8 @@
 import rospy
 from march_shared_classes.gait.subgait import Subgait
+from march_shared_classes.gait.limits import Limits
 from modifiable_joint_trajectory import ModifiableJointTrajectory
+from modifiable_setpoint import ModifiableSetpoint
 
 from trajectory_msgs.msg import JointTrajectory
 from trajectory_msgs.msg import JointTrajectoryPoint
@@ -8,6 +10,49 @@ from march_shared_resources.msg import Setpoint
 
 
 class ModifiableSubgait(Subgait):
+    joint_class = ModifiableJointTrajectory
+
+    @classmethod
+    def empty_subgait(cls, gait_generator, robot, gait_type='walk_like', duration=8):
+        if robot is None:
+            rospy.logerr("Cannot create gait without a loaded robot.")
+        joint_list = []
+        for i in range(0, len(robot.joints)):
+            urdf_joint = robot.joints[i]
+            if urdf_joint.type == "fixed":
+                rospy.loginfo("Skipping fixed joint " + urdf_joint.name)
+                continue
+
+            if urdf_joint.limit is None:
+                rospy.logwarn("Skipping joint " + urdf_joint.name + " because it has no limits.")
+                continue
+
+            default_setpoints = [
+                ModifiableSetpoint(0, 0, 0),
+                ModifiableSetpoint(3, 1.3, 0),
+                ModifiableSetpoint(4, 1.3, 0),
+                ModifiableSetpoint(duration, 0, 0)
+            ]
+            joint = ModifiableJointTrajectory(urdf_joint.name,
+                                              Limits(urdf_joint.safety_controller.soft_lower_limit,
+                                                     urdf_joint.safety_controller.soft_upper_limit,
+                                                     urdf_joint.limit.velocity),
+                                              default_setpoints,
+                                              duration
+                                              )
+            joint.set_gait_generator(gait_generator)
+            joint_list.append(joint)
+        return cls(joint_list, duration, gait_type)
+
+    @classmethod
+    def gait_generator_from_file(cls, gait_generator, robot, filename):
+        subgait = cls.from_file(robot, filename)
+        if subgait is None:
+            return
+        for joint in subgait.joints:
+            joint.set_gait_generator(gait_generator)
+        return subgait
+
     def to_joint_trajectory(self):
         joint_trajectory = JointTrajectory()
 
@@ -124,4 +169,5 @@ class ModifiableSubgait(Subgait):
             mirrored_joint = ModifiableJointTrajectory(mirrored_name, joint.limits, joint.setpoints, joint.duration)
             mirrored_joints.append(mirrored_joint)
 
-        return Gait(mirrored_joints, self.duration, self.name, mirrored_subgait_name, self.version, self.description)
+        return ModifiableSubgait(mirrored_joints, self.duration, self.gait_type, self.name, mirrored_subgait_name,
+                                 self.version, self.description)

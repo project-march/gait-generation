@@ -9,12 +9,12 @@ from modifiable_setpoint import ModifiableSetpoint
 
 
 class ModifiableJointTrajectory(JointTrajectory):
+    setpoint_class = ModifiableSetpoint
 
-    def __init__(self, name, limits, setpoints, duration, gait_generator):
+    def __init__(self, name, limits, setpoints, duration):
         self.name = name
         self.limits = limits
         self.setpoints = setpoints
-        self.gait_generator = gait_generator
         self.setpoints_history = RingBuffer(capacity=100, dtype=list)
         self.setpoints_redo_list = RingBuffer(capacity=100, dtype=list)
         self.duration = duration
@@ -22,6 +22,39 @@ class ModifiableJointTrajectory(JointTrajectory):
         self.enforce_limits()
 
         self.interpolated_setpoints = self.interpolate_setpoints()
+
+    @classmethod
+    def from_msg(cls, subgait_msg, joint_name, limits, duration):
+        user_defined_setpoints = subgait_msg.setpoints
+        if user_defined_setpoints:
+            joint_trajectory = subgait_msg.trajectory
+            setpoints = []
+            for actual_setpoint in user_defined_setpoints:
+                if joint_name in actual_setpoint.joint_names:
+                    setpoints.append(cls.get_setpoint_at_duration(
+                        joint_trajectory, joint_name, actual_setpoint.time_from_start))
+
+            return cls(joint_name,
+                       limits,
+                       setpoints,
+                       duration
+                       )
+
+        rospy.logwarn('This subgait has no user defined setpoints.')
+        return cls.super(subgait_msg, joint_name, limits, duration)
+
+    @staticmethod
+    def get_setpoint_at_duration(joint_trajectory, joint_name, duration):
+        for point in joint_trajectory.points:
+            if point.time_from_start == duration:
+                index = joint_trajectory.joint_names.index(joint_name)
+                time = rospy.Duration(point.time_from_start.secs, point.time_from_start.nsecs).to_sec()
+
+                return ModifiableSetpoint(time, point.positions[index], point.velocities[index])
+        return None
+
+    def set_gait_generator(self, gait_generator):
+        self.gait_generator = gait_generator
 
     def get_interpolated_position(self, time):
         for i in range(0, len(self.interpolated_setpoints[0])):
