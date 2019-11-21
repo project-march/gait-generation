@@ -14,7 +14,7 @@ def export_to_file(gait, gait_directory):
     subgait = Subgait()
 
     subgait.gait_type = gait.gait_type
-    subgait.trajectory = gait.to_joint_trajectory()
+    subgait.trajectory = gait.to_joint_trajectory_msg()
     subgait.setpoints = gait.to_setpoints()
     subgait.description = str(gait.description)
 

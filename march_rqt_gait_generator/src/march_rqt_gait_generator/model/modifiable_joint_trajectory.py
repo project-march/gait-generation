@@ -24,15 +24,15 @@ class ModifiableJointTrajectory(JointTrajectory):
         self.interpolated_setpoints = self.interpolate_setpoints()
 
     @classmethod
-    def from_msg(cls, subgait_msg, joint_name, limits, duration):
-        user_defined_setpoints = subgait_msg.setpoints
+    def from_dict(cls, subgait_dict, joint_name, limits, duration):
+        user_defined_setpoints = subgait_dict['setpoints']
         if user_defined_setpoints:
-            joint_trajectory = subgait_msg.trajectory
+            joint_trajectory = subgait_dict['trajectory']
             setpoints = []
             for actual_setpoint in user_defined_setpoints:
-                if joint_name in actual_setpoint.joint_names:
+                if joint_name in actual_setpoint['joint_names']:
                     setpoints.append(cls.get_setpoint_at_duration(
-                        joint_trajectory, joint_name, actual_setpoint.time_from_start))
+                        joint_trajectory, joint_name, actual_setpoint['time_from_start']))
 
             return cls(joint_name,
                        limits,
@@ -41,16 +41,16 @@ class ModifiableJointTrajectory(JointTrajectory):
                        )
 
         rospy.logwarn('This subgait has no user defined setpoints.')
-        return cls.super(subgait_msg, joint_name, limits, duration)
+        return cls.super(subgait_dict, joint_name, limits, duration)
 
     @staticmethod
     def get_setpoint_at_duration(joint_trajectory, joint_name, duration):
-        for point in joint_trajectory.points:
-            if point.time_from_start == duration:
-                index = joint_trajectory.joint_names.index(joint_name)
-                time = rospy.Duration(point.time_from_start.secs, point.time_from_start.nsecs).to_sec()
+        for point in joint_trajectory['points']:
+            if point['time_from_start'] == duration:
+                index = joint_trajectory['joint_names'].index(joint_name)
+                time = rospy.Duration(point['time_from_start']['secs'], point['time_from_start']['nsecs']).to_sec()
 
-                return ModifiableSetpoint(time, point.positions[index], point.velocities[index])
+                return ModifiableSetpoint(time, point['positions'][index], point['velocities'][index])
         return None
 
     def set_gait_generator(self, gait_generator):

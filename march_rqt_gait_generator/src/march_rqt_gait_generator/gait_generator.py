@@ -303,7 +303,7 @@ class GaitGeneratorPlugin(Plugin):
         self.velocity_markers_check_box.toggle()
 
     def publish_gait(self):
-        trajectory = self.gait.to_joint_trajectory()
+        trajectory = self.gait.to_joint_trajectory_msg()
         rospy.loginfo("Publishing trajectory to topic '" + self.topic_name + "'")
         self.gait_publisher.publish(trajectory)
 
