@@ -113,7 +113,6 @@ class ModifiableJointTrajectory(JointTrajectory):
                                                  -self.limits.velocity),
                                              self.limits.velocity)
 
-
     def within_safety_limits(self):
         for i in range(0, len(self.interpolated_setpoints)):
             if self.interpolated_setpoints[i].position > self.limits.upper or \
@@ -153,7 +152,7 @@ class ModifiableJointTrajectory(JointTrajectory):
         if single_joint_change:
             try:
                 self.gait_generator.save_changed_joints([self])
-            except AttributeError as e:
+            except AttributeError:
                 rospy.logerr("AttributeError: gait_generator not set in joint trajectories")
 
     def invert(self):
