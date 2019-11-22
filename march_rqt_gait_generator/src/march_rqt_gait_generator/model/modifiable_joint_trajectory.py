@@ -17,7 +17,7 @@ class ModifiableJointTrajectory(JointTrajectory):
         self.setpoints = setpoints
         self.setpoints_history = RingBuffer(capacity=100, dtype=list)
         self.setpoints_redo_list = RingBuffer(capacity=100, dtype=list)
-        self.duration = duration
+        self._duration = duration
 
         self.enforce_limits()
 
@@ -57,6 +57,15 @@ class ModifiableJointTrajectory(JointTrajectory):
         self.setpoints = setpoints
         self.enforce_limits()
 
+    @property
+    def duration(self):
+        return self._duration
+
+    @duration.setter
+    def duration(self, duration):
+        self._duration = duration
+        self.enforce_limits()
+
     def get_interpolated_position(self, time):
         for i in range(0, len(self.interpolated_setpoints[0])):
             if self.interpolated_setpoints[0][i] > time:
@@ -91,6 +100,11 @@ class ModifiableJointTrajectory(JointTrajectory):
         return [indices, bpoly(indices)]
 
     def enforce_limits(self):
+        if self.setpoints[0].time != 0:
+            self.add_interpolated_setpoint(0)
+        if self.setpoints[-1].time != self.duration:
+            self.add_interpolated_setpoint(self.duration)
+
         for i in range(0, len(self.setpoints)):
             self.setpoints[i].position = min(max(self.setpoints[i].position,
                                                  self.limits.lower),
