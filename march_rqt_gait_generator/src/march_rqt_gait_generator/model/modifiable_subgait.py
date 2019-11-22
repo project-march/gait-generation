@@ -39,7 +39,7 @@ class ModifiableSubgait(Subgait):
                                               default_setpoints,
                                               duration
                                               )
-            joint.set_gait_generator(gait_generator)
+            joint.gait_generator = gait_generator
             joint_list.append(joint)
         return cls(joint_list, duration, gait_type)
 
@@ -49,7 +49,7 @@ class ModifiableSubgait(Subgait):
         if subgait is None:
             return
         for joint in subgait.joints:
-            joint.set_gait_generator(gait_generator)
+            joint.gait_generator = gait_generator
         return subgait
 
     def to_joint_trajectory_msg(self):
@@ -171,3 +171,33 @@ class ModifiableSubgait(Subgait):
 
         return ModifiableSubgait(mirrored_joints, self.duration, self.gait_type, self.gait_name, mirrored_subgait_name,
                                  self.version, self.description)
+
+    def set_gait_type(self, gait_type):
+        self.gait_type = str(gait_type)
+
+    def set_gait_name(self, gait_name):
+        self.gait_name = gait_name
+
+    def set_description(self, description):
+        self.description = str(description)
+
+    def set_version(self, version):
+        self.version = version
+
+    def set_subgait_name(self, subgait_name):
+        self.subgait_name = subgait_name
+
+    def set_duration(self, duration, rescale=False):
+        for joint in self.joints:
+            # Loop in reverse to avoid out of bounds errors while deleting.
+            for setpoint in reversed(joint.setpoints):
+                if rescale:
+                    setpoint.time = duration * setpoint.time / self.duration
+                else:
+                    if setpoint.time > duration:
+                        joint.setpoints.remove(setpoint)
+            joint.interpolated_setpoints = joint.interpolate_setpoints()
+
+            joint.duration = duration
+
+        self.duration = duration

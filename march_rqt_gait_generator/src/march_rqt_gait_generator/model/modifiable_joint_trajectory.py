@@ -53,8 +53,9 @@ class ModifiableJointTrajectory(JointTrajectory):
                 return ModifiableSetpoint(time, point['positions'][index], point['velocities'][index])
         return None
 
-    def set_gait_generator(self, gait_generator):
-        self.gait_generator = gait_generator
+    def set_setpoints(self, setpoints):
+        self.setpoints = setpoints
+        self.enforce_limits()
 
     def get_interpolated_position(self, time):
         for i in range(0, len(self.interpolated_setpoints[0])):
@@ -91,10 +92,13 @@ class ModifiableJointTrajectory(JointTrajectory):
 
     def enforce_limits(self):
         for i in range(0, len(self.setpoints)):
-            self.setpoints[i].set_position(min(max(self.setpoints[i].position, self.limits.lower), self.limits.upper))
-            self.setpoints[i].set_velocity(min(
-                max(self.setpoints[i].velocity, -self.limits.velocity),
-                self.limits.velocity))
+            self.setpoints[i].position = min(max(self.setpoints[i].position,
+                                                 self.limits.lower),
+                                             self.limits.upper)
+            self.setpoints[i].velocity = min(max(self.setpoints[i].velocity,
+                                                 -self.limits.velocity),
+                                             self.limits.velocity)
+
 
     def within_safety_limits(self):
         for i in range(0, len(self.interpolated_setpoints)):
@@ -133,7 +137,10 @@ class ModifiableJointTrajectory(JointTrajectory):
     def save_setpoints(self, single_joint_change=True):
         self.setpoints_history.append(copy.deepcopy(self.setpoints))    # list(...) to copy instead of pointer
         if single_joint_change:
-            self.gait_generator.save_changed_joints([self])
+            try:
+                self.gait_generator.save_changed_joints([self])
+            except AttributeError as e:
+                rospy.logerr("AttributeError: gait_generator not set in joint trajectories")
 
     def invert(self):
         self.save_setpoints(single_joint_change=False)
