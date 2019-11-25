@@ -37,19 +37,17 @@ class ModifiableSubgait(Subgait):
                                                      urdf_joint.safety_controller.soft_upper_limit,
                                                      urdf_joint.limit.velocity),
                                               default_setpoints,
-                                              duration
+                                              duration,
+                                              gait_generator
                                               )
-            joint.gait_generator = gait_generator
             joint_list.append(joint)
         return cls(joint_list, duration, gait_type)
 
     @classmethod
-    def gait_generator_from_file(cls, gait_generator, robot, filename):
-        subgait = cls.from_file(robot, filename)
+    def from_file(cls, gait_generator, robot, filename):
+        subgait = super(ModifiableSubgait, cls).from_file(robot, filename, gait_generator)
         if subgait is None:
             return
-        for joint in subgait.joints:
-            joint.gait_generator = gait_generator
         return subgait
 
     def to_joint_trajectory_msg(self):

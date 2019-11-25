@@ -11,40 +11,43 @@ from modifiable_setpoint import ModifiableSetpoint
 class ModifiableJointTrajectory(JointTrajectory):
     setpoint_class = ModifiableSetpoint
 
-    def __init__(self, name, limits, setpoints, duration):
-        self.name = name
-        self.limits = limits
-        self.setpoints = setpoints
+    def __init__(self, name, limits, setpoints, duration, gait_generator=None):
         self.setpoints_history = RingBuffer(capacity=100, dtype=list)
         self.setpoints_redo_list = RingBuffer(capacity=100, dtype=list)
-        self._duration = duration
+        self.gait_generator = gait_generator
 
-        self.enforce_limits()
-
+        super(ModifiableJointTrajectory, self).__init__(name, limits, setpoints, duration)
         self.interpolated_setpoints = self.interpolate_setpoints()
 
     @classmethod
-    def from_dict(cls, subgait_dict, joint_name, limits, duration):
+    def from_dict(cls, subgait_dict, joint_name, limits, duration, gait_generator):
         user_defined_setpoints = subgait_dict['setpoints']
         if user_defined_setpoints:
             joint_trajectory = subgait_dict['trajectory']
             setpoints = []
             for actual_setpoint in user_defined_setpoints:
                 if joint_name in actual_setpoint['joint_names']:
-                    setpoints.append(cls.get_setpoint_at_duration(
+                    setpoints.append(cls._get_setpoint_at_duration(
                         joint_trajectory, joint_name, actual_setpoint['time_from_start']))
-
+            if setpoints[0].time != 0:
+                rospy.logwarn('First setpoint of {} has been set '
+                              'from {} to 0'.format(joint_name, setpoints[0].time))
+            if setpoints[-1].time != duration:
+                rospy.logwarn('Last setpoint of {} has been set '
+                              'from {} to {}'.format(joint_name, setpoints[0].time, duration))
             return cls(joint_name,
                        limits,
                        setpoints,
-                       duration
+                       duration,
+                       gait_generator
                        )
 
         rospy.logwarn('This subgait has no user defined setpoints.')
-        return cls.super(subgait_dict, joint_name, limits, duration)
+        return super(ModifiableJointTrajectory, cls).from_dict(subgait_dict, joint_name, limits,
+                                                               duration, gait_generator)
 
     @staticmethod
-    def get_setpoint_at_duration(joint_trajectory, joint_name, duration):
+    def _get_setpoint_at_duration(joint_trajectory, joint_name, duration):
         for point in joint_trajectory['points']:
             if point['time_from_start'] == duration:
                 index = joint_trajectory['joint_names'].index(joint_name)
@@ -100,10 +103,8 @@ class ModifiableJointTrajectory(JointTrajectory):
         return [indices, bpoly(indices)]
 
     def enforce_limits(self):
-        if self.setpoints[0].time != 0:
-            self.add_interpolated_setpoint(0)
-        if self.setpoints[-1].time != self.duration:
-            self.add_interpolated_setpoint(self.duration)
+        self.setpoints[0].time = 0
+        self.setpoints[-1].time = self.duration
 
         for i in range(0, len(self.setpoints)):
             self.setpoints[i].position = min(max(self.setpoints[i].position,
@@ -150,10 +151,7 @@ class ModifiableJointTrajectory(JointTrajectory):
     def save_setpoints(self, single_joint_change=True):
         self.setpoints_history.append(copy.deepcopy(self.setpoints))    # list(...) to copy instead of pointer
         if single_joint_change:
-            try:
-                self.gait_generator.save_changed_joints([self])
-            except AttributeError:
-                rospy.logerr("AttributeError: gait_generator not set in joint trajectories")
+            self.gait_generator.save_changed_joints([self])
 
     def invert(self):
         self.save_setpoints(single_joint_change=False)
