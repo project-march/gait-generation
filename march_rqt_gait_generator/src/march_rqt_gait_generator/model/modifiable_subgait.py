@@ -15,6 +15,7 @@ class ModifiableSubgait(Subgait):
     def empty_subgait(cls, gait_generator, robot, gait_type='walk_like', duration=8):
         if robot is None:
             rospy.logerr("Cannot create gait without a loaded robot.")
+            return None
         joint_list = []
         for i in range(0, len(robot.joints)):
             urdf_joint = robot.joints[i]
