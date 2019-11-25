@@ -4,7 +4,6 @@ from march_shared_classes.gait.limits import Limits
 from modifiable_joint_trajectory import ModifiableJointTrajectory
 from modifiable_setpoint import ModifiableSetpoint
 
-from trajectory_msgs import msg
 from march_shared_resources.msg import Setpoint
 
 
@@ -50,29 +49,6 @@ class ModifiableSubgait(Subgait):
         if subgait is None:
             return
         return subgait
-
-    def to_joint_trajectory_msg(self):
-        joint_trajectory_msg = msg.JointTrajectory()
-
-        timestamps = self.get_unique_timestamps()
-
-        for joint in self.joints:
-            joint_trajectory_msg.joint_names.append(joint.name)
-
-        for timestamp in timestamps:
-            joint_trajectory_point = msg.JointTrajectoryPoint()
-            joint_trajectory_point.time_from_start = rospy.Duration(timestamp)
-            for joint in self.joints:
-                interpolated_setpoint = joint.get_interpolated_setpoint(timestamp)
-
-                if interpolated_setpoint.time != timestamp:
-                    rospy.logerr("Time mismatch in joint {} at timestamp {}, "
-                                 "got time {}".format(joint.name, timestamp, interpolated_setpoint.time))
-                joint_trajectory_point.positions.append(interpolated_setpoint.position)
-                joint_trajectory_point.velocities.append(interpolated_setpoint.velocity)
-            joint_trajectory_msg.points.append(joint_trajectory_point)
-
-        return joint_trajectory_msg
 
     def to_setpoints(self):
         user_defined_setpoints = []
