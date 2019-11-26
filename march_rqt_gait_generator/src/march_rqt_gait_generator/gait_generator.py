@@ -434,12 +434,10 @@ class GaitGeneratorPlugin(Plugin):
             if not os.path.isdir(output_file_directory):
                 raise
 
-        output_file = open(output_file_path, 'w')
-        output_file.write(str(subgait_msg))
+        with open(output_file_path, 'w') as file:
+            file.write(str(subgait_msg))
 
         UserInterfaceController.notify("Gait Saved", output_file_path)
-
-        output_file.close()
 
     # Called by export_gait
     def get_gait_directory(self):
