@@ -4,8 +4,6 @@ from march_shared_classes.gait.limits import Limits
 from modifiable_joint_trajectory import ModifiableJointTrajectory
 from modifiable_setpoint import ModifiableSetpoint
 
-from march_shared_resources.msg import Setpoint
-
 
 class ModifiableSubgait(Subgait):
     joint_class = ModifiableJointTrajectory
