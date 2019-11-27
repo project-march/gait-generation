@@ -428,11 +428,8 @@ class GaitGeneratorPlugin(Plugin):
 
         rospy.loginfo("Writing gait to " + output_file_path)
 
-        try:
+        if not os.path.isdir(output_file_directory):
             os.makedirs(output_file_directory)
-        except OSError:
-            if not os.path.isdir(output_file_directory):
-                raise
 
         with open(output_file_path, 'w') as file:
             file.write(str(subgait_msg))
