@@ -42,7 +42,6 @@ class JointSettingSpinBoxDelegate(QtGui.QItemDelegate):
             else:
                 max_time = float(unicode(max_time_cell)) + time_offset
 
-            print min_time, max_time
             editor.setMinimum(min_time)
             editor.setMaximum(max_time)
         # Position
@@ -75,5 +74,4 @@ class JointSettingSpinBoxDelegate(QtGui.QItemDelegate):
         model.setData(index, str(value), QtCore.Qt.EditRole)
 
     def updateEditorGeometry(self, editor, option, index):
-        print option
         editor.setGeometry(option.rect)

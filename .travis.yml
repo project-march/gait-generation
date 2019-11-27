@@ -1,6 +1,7 @@
 # This config uses industrial_ci (https://github.com/ros-industrial/industrial_ci.git).
 # For troubleshooting, see readme (https://github.com/ros-industrial/industrial_ci/blob/master/README.rst)
 
+os: linux
 language: generic # optional, just removes the language badge
 
 services:
@@ -22,7 +23,8 @@ env:
     - BUILDER=colcon
     - CATKIN_LINT=pedantic
     - UPSTREAM_WORKSPACE='.rosinstall -march/march_data_collector -march/march_description -march/march_gain_scheduling -march/march_gait_scheduler -march/march_gait_selection -march/march_launch -march/march_safety -march/march_sound_scheduler -march/march_state_machine'
-    - AFTER_SCRIPT='builder_run_build "$target_ws/install" "$target_ws" --cmake-target-skip-unavailable --cmake-target roslint'
+
+import: .flake8.travis.yml
 
 jobs:
   include:
@@ -30,12 +32,6 @@ jobs:
       env: ROS_DISTRO=kinetic
     - name: "Melodic"
       env: ROS_DISTRO=melodic
-    - name: "flake8"
-      language: python
-      python: 2.7
-      install:
-        - pip install flake8 pep8-naming
-      script: flake8
 
 # clone and run industrial_ci
 install:

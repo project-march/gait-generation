@@ -6,11 +6,11 @@ class TimeSliderThread(QtCore.QThread):
 
     update_signal = QtCore.pyqtSignal(int)
 
-    def __init__(self, current, playback_speed, max):
+    def __init__(self, current, playback_speed, max_time):
         QtCore.QThread.__init__(self)
         self.current = current
         self.playback_speed = playback_speed
-        self.max = max
+        self.max = max_time
         self.allowed_to_run = True
 
     def run(self):
