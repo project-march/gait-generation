@@ -1,11 +1,8 @@
 import copy
 
 import numpy as np
-
 from numpy_ringbuffer import RingBuffer
-
 import rospy
-
 from scipy.interpolate import BPoly
 
 from march_shared_classes.gait.joint_trajectory import JointTrajectory

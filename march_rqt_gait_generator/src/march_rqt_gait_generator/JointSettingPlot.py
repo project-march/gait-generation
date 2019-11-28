@@ -1,7 +1,6 @@
 import math
 
 from PyQt5.QtCore import pyqtSignal
-
 import pyqtgraph as pg
 from pyqtgraph.Qt import QtCore
 

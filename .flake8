@@ -1,7 +1,8 @@
 [flake8]
 max-line-length = 120
 exclude = .git
-application-import-names = march_shared_classes, march_shared_resources, march_rqt_gait_generator, model
+application-package-names = march_shared_classes, march_shared_resources
+import-order-style = appnexus
 ignore =
     # D100: Missing docstring in public module
     D100,

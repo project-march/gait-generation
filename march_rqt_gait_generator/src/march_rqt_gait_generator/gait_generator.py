@@ -2,38 +2,28 @@ import math
 import os
 
 from numpy_ringbuffer import RingBuffer
-
 import pyqtgraph as pg
 from pyqtgraph.Qt import QtCore
-
 from python_qt_binding import loadUi
 from python_qt_binding.QtWidgets import (QCheckBox, QComboBox, QDoubleSpinBox,
                                          QFileDialog, QFrame, QHeaderView,
                                          QLineEdit, QMessageBox, QPushButton,
                                          QSlider, QSpinBox, QWidget)
-
 from qt_gui.plugin import Plugin
-
 import rospkg
-
 import rospy
-
 import rviz
-
 from sensor_msgs.msg import JointState
-
 from tf import (ConnectivityException, ExtrapolationException, LookupException,
                 TransformListener)
-
 from trajectory_msgs.msg import JointTrajectory
-
 from urdf_parser_py import urdf
 
 from . import UserInterfaceController
 from .JointSettingPlot import JointSettingPlot
-from .TimeSliderThread import TimeSliderThread
 from .model.modifiable_setpoint import ModifiableSetpoint
 from .model.modifiable_subgait import ModifiableSubgait
+from .TimeSliderThread import TimeSliderThread
 
 
 class GaitGeneratorPlugin(Plugin):

@@ -1,5 +1,4 @@
 from pyqtgraph.Qt import QtCore
-
 import rospy
 
 
