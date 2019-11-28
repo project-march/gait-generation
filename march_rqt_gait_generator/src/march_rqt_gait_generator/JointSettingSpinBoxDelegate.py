@@ -5,8 +5,8 @@ from pyqtgraph.Qt import QtCore, QtGui
 
 
 class JointSettingSpinBoxDelegate(QtGui.QItemDelegate):
-    """
-    Delegate for the QDoubleSpinBox that opens when you edit a table cell.
+    """Delegate for the QDoubleSpinBox that opens when you edit a table cell.
+
     The min and max allowed value is based on the row (time, position, velocity).
     """
 

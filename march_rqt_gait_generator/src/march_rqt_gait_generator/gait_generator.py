@@ -12,10 +12,10 @@ from numpy_ringbuffer import RingBuffer
 
 from qt_gui.plugin import Plugin
 from python_qt_binding import loadUi
-from python_qt_binding.QtWidgets import QWidget, QFileDialog, QPushButton, \
-                                        QLineEdit, QSlider, QHeaderView, \
-                                        QCheckBox, QMessageBox, QSpinBox, QDoubleSpinBox, QFrame, \
-                                        QComboBox
+from python_qt_binding.QtWidgets import (QWidget, QFileDialog, QPushButton,
+                                         QLineEdit, QSlider, QHeaderView,
+                                         QCheckBox, QMessageBox, QSpinBox,
+                                         QDoubleSpinBox, QFrame, QComboBox)
 
 import rviz
 from tf import TransformListener, LookupException, ConnectivityException, ExtrapolationException
