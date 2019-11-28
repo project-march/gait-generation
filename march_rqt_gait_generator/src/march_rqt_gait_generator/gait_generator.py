@@ -19,11 +19,11 @@ from tf import (ConnectivityException, ExtrapolationException, LookupException,
 from trajectory_msgs.msg import JointTrajectory
 from urdf_parser_py import urdf
 
-from . import UserInterfaceController
-from .JointSettingPlot import JointSettingPlot
+from . import user_interface_controller
+from .joint_setting_plot import JointSettingPlot
 from .model.modifiable_setpoint import ModifiableSetpoint
 from .model.modifiable_subgait import ModifiableSubgait
-from .TimeSliderThread import TimeSliderThread
+from .time_slider_thread import TimeSliderThread
 
 
 class GaitGeneratorPlugin(Plugin):
@@ -219,14 +219,14 @@ class GaitGeneratorPlugin(Plugin):
         joint_setting_plot = JointSettingPlot(joint, self.gait.duration, show_velocity_markers)
         joint_setting.Plot.addItem(joint_setting_plot)
 
-        joint_setting.Table = UserInterfaceController.update_table(
+        joint_setting.Table = user_interface_controller.update_table(
             joint_setting.Table, joint, self.gait.duration)
         # Disable scrolling horizontally
         joint_setting.Table.horizontalScrollBar().setDisabled(True)
         joint_setting.Table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
 
         def update_joint_ui():
-            UserInterfaceController.update_ui_elements(
+            user_interface_controller.update_ui_elements(
                 joint, table=joint_setting.Table, plot=joint_setting_plot, duration=self.gait.duration,
                 show_velocity_markers=self.velocity_markers_check_box.isChecked())
             self.publish_preview()
@@ -243,14 +243,14 @@ class GaitGeneratorPlugin(Plugin):
 
         self.velocity_markers_check_box.stateChanged.connect(
             lambda: [
-                joint.set_setpoints(UserInterfaceController.plot_to_setpoints(joint_setting_plot)),
+                joint.set_setpoints(user_interface_controller.plot_to_setpoints(joint_setting_plot)),
                 update_joint_ui(),
             ])
 
         # Connect a function to update the model and to update the table.
         joint_setting_plot.plot_item.sigPlotChanged.connect(
             lambda: [
-                joint.set_setpoints(UserInterfaceController.plot_to_setpoints(joint_setting_plot)),
+                joint.set_setpoints(user_interface_controller.plot_to_setpoints(joint_setting_plot)),
                 update_joint_ui(),
             ])
 
@@ -269,8 +269,8 @@ class GaitGeneratorPlugin(Plugin):
 
         joint_setting.Table.itemChanged.connect(
             lambda: [
-                joint.set_setpoints(UserInterfaceController.table_to_setpoints(joint_setting.Table)),
-                UserInterfaceController.update_ui_elements(
+                joint.set_setpoints(user_interface_controller.table_to_setpoints(joint_setting.Table)),
+                user_interface_controller.update_ui_elements(
                     joint, table=None, plot=joint_setting_plot, duration=self.gait.duration,
                     show_velocity_markers=self.velocity_markers_check_box.isChecked()),
                 self.publish_preview(),
@@ -393,7 +393,7 @@ class GaitGeneratorPlugin(Plugin):
             if mirror:
                 self.export_to_file(mirror, self.get_gait_directory())
             else:
-                UserInterfaceController.notify('Could not mirror gait', 'Check the logs for more information.')
+                user_interface_controller.notify('Could not mirror gait', 'Check the logs for more information.')
                 return
 
         self.export_to_file(self.gait, self.get_gait_directory())
@@ -428,7 +428,7 @@ class GaitGeneratorPlugin(Plugin):
         with open(output_file_path, 'w') as output_file:
             output_file.write(str(subgait_msg))
 
-        UserInterfaceController.notify('Gait Saved', output_file_path)
+        user_interface_controller.notify('Gait Saved', output_file_path)
 
     # Called by export_gait
     def get_gait_directory(self):

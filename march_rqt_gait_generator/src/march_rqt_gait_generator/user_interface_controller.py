@@ -3,7 +3,7 @@ import subprocess
 
 from python_qt_binding.QtWidgets import QTableWidgetItem
 
-from .JointSettingSpinBoxDelegate import JointSettingSpinBoxDelegate
+from .joint_setting_spin_box_delegate import JointSettingSpinBoxDelegate
 from .model.modifiable_setpoint import ModifiableSetpoint
 
 TABLE_DIGITS = 4
