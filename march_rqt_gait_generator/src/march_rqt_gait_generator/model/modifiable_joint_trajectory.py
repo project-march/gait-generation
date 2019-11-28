@@ -1,11 +1,16 @@
-import numpy as np
 import copy
-import rospy
-from scipy.interpolate import BPoly
+
+import numpy as np
+
 from numpy_ringbuffer import RingBuffer
 
+import rospy
+
+from scipy.interpolate import BPoly
+
 from march_shared_classes.gait.joint_trajectory import JointTrajectory
-from modifiable_setpoint import ModifiableSetpoint
+
+from .modifiable_setpoint import ModifiableSetpoint
 
 
 class ModifiableJointTrajectory(JointTrajectory):

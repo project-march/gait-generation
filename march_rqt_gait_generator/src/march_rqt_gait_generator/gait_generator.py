@@ -1,35 +1,39 @@
 import math
 import os
 
-import rospy
-import rospkg
-
-from urdf_parser_py import urdf
-import pyqtgraph as pg
-
-from pyqtgraph.Qt import QtCore
 from numpy_ringbuffer import RingBuffer
 
-from qt_gui.plugin import Plugin
+import pyqtgraph as pg
+from pyqtgraph.Qt import QtCore
+
 from python_qt_binding import loadUi
-from python_qt_binding.QtWidgets import (QWidget, QFileDialog, QPushButton,
-                                         QLineEdit, QSlider, QHeaderView,
-                                         QCheckBox, QMessageBox, QSpinBox,
-                                         QDoubleSpinBox, QFrame, QComboBox)
+from python_qt_binding.QtWidgets import (QCheckBox, QComboBox, QDoubleSpinBox,
+                                         QFileDialog, QFrame, QHeaderView,
+                                         QLineEdit, QMessageBox, QPushButton,
+                                         QSlider, QSpinBox, QWidget)
+
+from qt_gui.plugin import Plugin
+
+import rospkg
+
+import rospy
 
 import rviz
-from tf import TransformListener, LookupException, ConnectivityException, ExtrapolationException
 
-from trajectory_msgs.msg import JointTrajectory
 from sensor_msgs.msg import JointState
 
-import UserInterfaceController
+from tf import (ConnectivityException, ExtrapolationException, LookupException,
+                TransformListener)
 
-from model.modifiable_subgait import ModifiableSubgait
-from model.modifiable_setpoint import ModifiableSetpoint
+from trajectory_msgs.msg import JointTrajectory
 
-from JointSettingPlot import JointSettingPlot
-from TimeSliderThread import TimeSliderThread
+from urdf_parser_py import urdf
+
+from . import UserInterfaceController
+from .JointSettingPlot import JointSettingPlot
+from .TimeSliderThread import TimeSliderThread
+from .model.modifiable_setpoint import ModifiableSetpoint
+from .model.modifiable_subgait import ModifiableSubgait
 
 
 class GaitGeneratorPlugin(Plugin):

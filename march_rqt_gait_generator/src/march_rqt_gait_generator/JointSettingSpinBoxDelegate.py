@@ -1,7 +1,8 @@
 import math
 
-from python_qt_binding.QtWidgets import QDoubleSpinBox, QAbstractSpinBox
 from pyqtgraph.Qt import QtCore, QtGui
+
+from python_qt_binding.QtWidgets import QAbstractSpinBox, QDoubleSpinBox
 
 
 class JointSettingSpinBoxDelegate(QtGui.QItemDelegate):

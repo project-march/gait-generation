@@ -1,8 +1,9 @@
 import math
 
+from PyQt5.QtCore import pyqtSignal
+
 import pyqtgraph as pg
 from pyqtgraph.Qt import QtCore
-from PyQt5.QtCore import pyqtSignal
 
 
 # Enable antialiasing for prettier plots
