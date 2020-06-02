@@ -1,3 +1,3 @@
-import modifiable_joint_trajectory
-import modifiable_setpoint
-import modifiable_subgait
+from . import modifiable_joint_trajectory
+from . import modifiable_setpoint
+from . import modifiable_subgait

@@ -1,9 +1,10 @@
 #!/usr/bin/env python
-from nosetests.gait_generator_controller_test import GaitGeneratorControllerTest
-from nosetests.modifiable_joint_trajectory_test import ModifiableJointTrajectoryTest
-from nosetests.modifiable_setpoint_test import ModifiableSetpointTest
-from nosetests.modifiable_subgait_test import ModifiableSubgaitTest
 import rosunit
+
+from .nosetests.gait_generator_controller_test import GaitGeneratorControllerTest
+from .nosetests.modifiable_joint_trajectory_test import ModifiableJointTrajectoryTest
+from .nosetests.modifiable_setpoint_test import ModifiableSetpointTest
+from .nosetests.modifiable_subgait_test import ModifiableSubgaitTest
 
 PKG = 'march_rqt_gait_generator'
 

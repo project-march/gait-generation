@@ -60,27 +60,27 @@ class ModifiableSubgaitTest(unittest.TestCase):
 
     # setters tests
     def test_set_gait_type(self):
-        self.subgait.set_gait_type(u'banana type')
+        self.subgait.set_gait_type('banana type')
         self.assertEqual(self.subgait.gait_type, 'banana type')
         self.assertIsInstance(self.subgait.gait_type, str)
 
     def test_set_gait_name(self):
-        self.subgait.set_gait_name(u'banana name')
+        self.subgait.set_gait_name('banana name')
         self.assertEqual(self.subgait.gait_name, 'banana name')
         self.assertIsInstance(self.subgait.gait_name, str)
 
     def test_set_description(self):
-        self.subgait.set_description(u'banana description')
+        self.subgait.set_description('banana description')
         self.assertEqual(self.subgait.description, 'banana description')
         self.assertIsInstance(self.subgait.description, str)
 
     def test_set_version(self):
-        self.subgait.set_version(u'banana version')
+        self.subgait.set_version('banana version')
         self.assertEqual(self.subgait.version, 'banana version')
         self.assertIsInstance(self.subgait.version, str)
 
     def test_set_subgait_name(self):
-        self.subgait.set_subgait_name(u'banana name')
+        self.subgait.set_subgait_name('banana name')
         self.assertEqual(self.subgait.subgait_name, 'banana name')
         self.assertIsInstance(self.subgait.subgait_name, str)
 

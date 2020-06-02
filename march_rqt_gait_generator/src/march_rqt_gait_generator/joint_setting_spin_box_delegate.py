@@ -34,13 +34,13 @@ class JointSettingSpinBoxDelegate(QtGui.QItemDelegate):
             if min_time_cell is None:
                 min_time = 0
             else:
-                min_time = float(unicode(min_time_cell)) + time_offset
+                min_time = float(str(min_time_cell)) + time_offset
 
             max_time_cell = index.model().data(index.sibling(row + 1, column), QtCore.Qt.EditRole)
             if max_time_cell is None:
                 max_time = self.duration
             else:
-                max_time = float(unicode(max_time_cell)) + time_offset
+                max_time = float(str(max_time_cell)) + time_offset
 
             editor.setMinimum(min_time)
             editor.setMaximum(max_time)
