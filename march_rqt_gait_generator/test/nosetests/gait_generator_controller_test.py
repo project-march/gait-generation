@@ -186,7 +186,7 @@ class GaitGeneratorControllerTest(unittest.TestCase):
         try:
             self.gait_generator_controller.import_gait()
         except FileNotFoundError:
-            self.fail("Import gait raised FileNotFoundError")
+            self.fail('Import gait raised FileNotFoundError')
 
     def test_import_gait(self):
         self.gait_generator_view.open_file_dialogue = Mock(return_value=(self.subgait_path, None))
@@ -394,7 +394,7 @@ class GaitGeneratorControllerTest(unittest.TestCase):
         try:
             self.gait_generator_controller.import_side_subgait('previous')
         except FileNotFoundError:
-            self.fail("Import side subgait raised FileNotFoundError")
+            self.fail('Import side subgait raised FileNotFoundError')
 
     def test_import_previous_subgait_lock_start(self):
         self.gait_generator_view.open_file_dialogue = Mock(return_value=(self.subgait_path, None))
