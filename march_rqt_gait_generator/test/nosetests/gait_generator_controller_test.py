@@ -188,6 +188,17 @@ class GaitGeneratorControllerTest(unittest.TestCase):
         except FileNotFoundError:
             self.fail('Import gait raised FileNotFoundError')
 
+    def test_import_gait_one_setpoint(self):
+        subgait_path = '{rsc}/{gait}/{subgait}/{version}.subgait'.format(rsc=self.resources_folder,
+                                                                         gait='home',
+                                                                         subgait='home_sit',
+                                                                         version='MIV_ankle_0')
+        self.gait_generator_view.open_file_dialogue = Mock(return_value=(subgait_path, None))
+        try:
+            self.gait_generator_controller.import_gait()
+        except TypeError:
+            self.fail('Import gait raised TypeError')
+
     def test_import_gait(self):
         self.gait_generator_view.open_file_dialogue = Mock(return_value=(self.subgait_path, None))
 
