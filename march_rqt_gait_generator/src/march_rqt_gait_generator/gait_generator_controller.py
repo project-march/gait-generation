@@ -227,6 +227,12 @@ class GaitGeneratorController(object):
             return
         if gait.gait_type is None or gait.gait_type == '':
             gait.gait_type = 'walk_like'
+
+        if any([len(joint._setpoints) == 1 for joint in gait.joints]):
+            rospy.logwarn('Cannot load a gait with only one setpoint')
+            self.view.message(title='Error', msg='Cannot load a gait with only one setpoint')
+            return
+
         self.subgait = gait
 
         was_playing = self.time_slider_thread is not None
