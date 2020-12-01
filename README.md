@@ -1,3 +1,5 @@
+This repository has been archived. A recent version can be found on https://gitlab.com/project-march.
+
 # Gait Generation
 Robot agnostic rqt plugin which allows the user to create joint trajectories.
 
